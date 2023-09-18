@@ -11,11 +11,23 @@ export interface BankUser {
 }
 
 export const account = (firstName: string, initialAmount: number, createChecking?: boolean, createSavings?: boolean): BankUser => {    
+    const initialSavingsAmountRate = 0.5;
+    
     const accountUser: BankUser = {
         id: uuidv4(),
         firstName: firstName,
         initialAmount: initialAmount,
     };
+
+    if (createChecking && createSavings) {
+        let savingsAmount = (initialAmount - (initialAmount * initialSavingsAmountRate));
+        let newChecking = createCheckingAccount();
+        accountUser.checkingAccount = newChecking.deposit((initialAmount * initialSavingsAmountRate));
+
+        let newSavings = createSavingsAccount();
+        accountUser.savingsAccount = newSavings.deposit(savingsAmount);
+        return accountUser;
+    }
 
     if (createChecking) {
         let newChecking = createCheckingAccount();
