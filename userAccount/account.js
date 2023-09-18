@@ -11,18 +11,21 @@ var account = function (firstName, initialAmount, hasOverdraft, shouldCreateChec
         initialAmount: initialAmount,
         overdraftProtection: hasOverdraft,
     };
+    if (!shouldCreateChecking && !shouldCreateSavings) {
+        throw new Error("Please select at least one account type.");
+    }
     if (shouldCreateChecking && shouldCreateSavings) {
         var initialSavingsRate = 0.5;
         var savingsDepositAmount = (initialAmount - (initialAmount * initialSavingsRate));
         accountUser.checkingAccount = (0, checkingAccount_1.createCheckingAccount)(hasOverdraft).deposit((initialAmount * initialSavingsRate));
         accountUser.savingsAccount = (0, savingsAccount_1.createSavingsAccount)().deposit(savingsDepositAmount);
-        return accountUser;
     }
-    if (shouldCreateChecking) {
+    else if (shouldCreateChecking) {
         accountUser.checkingAccount = (0, checkingAccount_1.createCheckingAccount)(hasOverdraft).deposit(initialAmount);
-        return accountUser;
     }
-    accountUser.savingsAccount = (0, savingsAccount_1.createSavingsAccount)().deposit(initialAmount);
+    else if (shouldCreateSavings) {
+        accountUser.savingsAccount = (0, savingsAccount_1.createSavingsAccount)().deposit(initialAmount);
+    }
     return accountUser;
 };
 exports.account = account;

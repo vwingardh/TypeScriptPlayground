@@ -25,21 +25,26 @@ export const account = (
         overdraftProtection: hasOverdraft,
     };
 
+    if (!shouldCreateChecking && !shouldCreateSavings) {
+        throw new Error("Please select at least one account type.");
+    }
+
     if (shouldCreateChecking && shouldCreateSavings) {
         const initialSavingsRate: number = 0.5;
         let savingsDepositAmount: number = (initialAmount - (initialAmount * initialSavingsRate));
         accountUser.checkingAccount = createCheckingAccount(hasOverdraft).deposit((initialAmount * initialSavingsRate));
 
         accountUser.savingsAccount = createSavingsAccount().deposit(savingsDepositAmount);
-        return accountUser;
     }
     
-    if (shouldCreateChecking) {
+    else if (shouldCreateChecking) {
         accountUser.checkingAccount = createCheckingAccount(hasOverdraft).deposit(initialAmount);
-        return accountUser;
     }
 
-    accountUser.savingsAccount = createSavingsAccount().deposit(initialAmount)
+    else if (shouldCreateSavings) {
+        accountUser.savingsAccount = createSavingsAccount().deposit(initialAmount);
+    }
+
     return accountUser;
 }
 
